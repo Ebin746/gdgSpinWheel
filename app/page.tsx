@@ -1,103 +1,351 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+import { useState, useEffect } from "react";
+import { LevelSelector } from "@/components/level-selector";
+import { SpinningWheel } from "@/components/spinning-wheel";
+import { QuestionResult } from "@/components/question-result";
+import { GDGLogo } from "@/components/gdg-logo";
+import questionsData from "@/data/questions.json";
+import { ArrowLeft, History, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+interface Question {
+  id: string;
+  title: string;
+  link: string;
+}
+
+interface StoredResult {
+  level: string;
+  question: Question;
+  timestamp: number;
+}
+
+const STORAGE_KEY = "gdg-dsa-lucky-draw-results";
+
+const LEVEL_COLORS: Record<string, string> = {
+  basic: "#34A853",
+  medium: "#FBBC05",
+  advanced: "#4285F4",
+  pro: "#EA4335",
+};
+
+export default function LuckyDrawPage() {
+  const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [result, setResult] = useState<Question | null>(null);
+  const [storedResults, setStoredResults] = useState<StoredResult[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
+  const [isNewResult, setIsNewResult] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Load stored results on mount
+  useEffect(() => {
+    setMounted(true);
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      try {
+        setStoredResults(JSON.parse(stored));
+      } catch (e) {
+        console.error("Failed to parse stored results:", e);
+      }
+    }
+  }, []);
+
+  // Check if user already spun for selected level - FIX: Only check once when level is first selected
+  useEffect(() => {
+    if (selectedLevel && !result) {
+      const existingResult = storedResults.find(
+        (r) => r.level === selectedLevel
+      );
+      if (existingResult) {
+        setResult(existingResult.question);
+        setIsNewResult(false);
+      }
+    }
+  }, [selectedLevel]); // Remove storedResults and result from dependencies to prevent re-triggering
+
+  const handleLevelSelect = (level: string) => {
+    // Reset states before selecting new level
+    setResult(null);
+    setIsNewResult(false);
+    setSelectedLevel(level);
+    setShowHistory(false);
+    
+    // Check for existing result after state is cleared
+    setTimeout(() => {
+      const existingResult = storedResults.find((r) => r.level === level);
+      if (existingResult) {
+        setResult(existingResult.question);
+        setIsNewResult(false);
+      }
+    }, 0);
+  };
+
+  const handleSpinComplete = (question: Question) => {
+    if (!question) {
+      return;
+    }
+
+    // Store result
+    const newResult: StoredResult = {
+      level: selectedLevel!,
+      question,
+      timestamp: Date.now(),
+    };
+
+    const updatedResults = [
+      ...storedResults.filter((r) => r.level !== selectedLevel),
+      newResult,
+    ];
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedResults));
+    setStoredResults(updatedResults);
+
+    // Set result state - this triggers the re-render
+    setIsNewResult(true);
+    setResult(question);
+  };
+
+  const handleReset = () => {
+    setSelectedLevel(null);
+    setResult(null);
+    setIsNewResult(false);
+  };
+
+  const clearHistory = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    setStoredResults([]);
+    setResult(null);
+    setSelectedLevel(null);
+  };
+
+  const questions =
+    selectedLevel && questionsData[selectedLevel as keyof typeof questionsData]
+      ? questionsData[selectedLevel as keyof typeof questionsData].questions
+      : [];
+
+  if (!mounted) {
+    return (
+      <main className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-pulse">
+          <GDGLogo className="h-12" />
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+    );
+  }
+
+  return (
+    <main className="bg-background text-foreground overflow-hidden flex flex-col min-h-screen">
+      {/* Animated background */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div
+          className="absolute w-[500px] h-[500px] rounded-full blur-[120px] animate-bg-float"
+          style={{
+            background: "rgba(66, 133, 244, 0.08)",
+            top: "-10%",
+            left: "-10%",
+          }}
+        />
+        <div
+          className="absolute w-[400px] h-[400px] rounded-full blur-[100px] animate-bg-float-delayed"
+          style={{
+            background: "rgba(234, 67, 53, 0.06)",
+            bottom: "-5%",
+            right: "-5%",
+          }}
+        />
+        <div
+          className="absolute w-[300px] h-[300px] rounded-full blur-[80px] animate-bg-float"
+          style={{
+            background: "rgba(52, 168, 83, 0.06)",
+            top: "40%",
+            right: "20%",
+            animationDelay: "2s",
+          }}
+        />
+      </div>
+
+      {/* Header */}
+      <header className="border-b border-border/50 sticky top-0 bg-background/60 backdrop-blur-xl z-50">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <GDGLogo className="h-10 animate-fade-in" />
+          <div className="flex items-center gap-2">
+            {storedResults.length > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowHistory(!showHistory)}
+                className={`gap-2 text-muted-foreground hover:text-foreground transition-all duration-300 ${
+                  showHistory ? "bg-white/10" : ""
+                }`}
+              >
+                <History className="w-4 h-4" />
+                <span className="hidden sm:inline">
+                  History ({storedResults.length})
+                </span>
+              </Button>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Scrollable Content Area */}
+      <div className="flex-1 overflow-y-auto">
+        {/* Main Content */}
+        <div className="container mx-auto px-4 py-4 md:py-6 relative z-10">
+          {/* History Panel */}
+          {showHistory && storedResults.length > 0 && (
+            <div className="mb-4 p-4 rounded-2xl border border-border bg-card/50 backdrop-blur-sm animate-slide-down">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-base font-semibold text-foreground">
+                  Your Previous Results
+                </h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearHistory}
+                  className="text-destructive hover:text-destructive gap-2"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Clear All
+                </Button>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {storedResults.map((r, index) => (
+                  <button
+                    key={r.level}
+                    onClick={() => handleLevelSelect(r.level)}
+                    className="p-3 rounded-xl border border-border hover:border-white/30 transition-all duration-300 text-left bg-secondary/30 hover:bg-secondary/50 hover:scale-[1.02] animate-fade-in-up group"
+                    style={{
+                      animationDelay: `${index * 100}ms`,
+                      borderColor: `${LEVEL_COLORS[r.level]}30`,
+                    }}
+                  >
+                    <div
+                      className="text-xs uppercase tracking-wide mb-1 font-semibold"
+                      style={{ color: LEVEL_COLORS[r.level] }}
+                    >
+                      {r.level}
+                    </div>
+                    <div className="font-semibold text-sm text-foreground group-hover:text-white transition-colors">
+                      {r.question.title}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Title Section - Only show when no level is selected */}
+          {!selectedLevel && (
+            <div className="text-center mb-6 animate-fade-in">
+              <h1 className="text-3xl md:text-5xl font-bold mb-2 text-balance">
+                <span
+                  className="inline-block animate-letter"
+                  style={{ animationDelay: "0ms", color: "#4285F4" }}
+                >
+                  D
+                </span>
+                <span
+                  className="inline-block animate-letter"
+                  style={{ animationDelay: "100ms", color: "#EA4335" }}
+                >
+                  S
+                </span>
+                <span
+                  className="inline-block animate-letter"
+                  style={{ animationDelay: "200ms", color: "#FBBC05" }}
+                >
+                  A
+                </span>
+                <span className="text-foreground"> Lucky Draw</span>
+              </h1>
+              <p className="text-muted-foreground text-sm md:text-base max-w-xl mx-auto text-balance">
+                Spin the wheel and get a random DSA challenge! Choose your
+                difficulty level and test your coding skills.
+              </p>
+            </div>
+          )}
+
+          {/* Content Area */}
+          {!selectedLevel ? (
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold text-center text-foreground animate-fade-in">
+                Select Your Difficulty Level
+              </h2>
+              <LevelSelector
+                onSelect={handleLevelSelect}
+                selectedLevel={selectedLevel}
+              />
+            </div>
+          ) : result ? (
+            <div className="space-y-6 animate-fade-in">
+              <button
+                onClick={handleReset}
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-all duration-300 hover:-translate-x-1 group"
+              >
+                <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+                <span>Back to levels</span>
+              </button>
+              <QuestionResult
+                key={result.id}
+                question={result}
+                level={selectedLevel}
+                onReset={handleReset}
+                isNewResult={isNewResult}
+              />
+            </div>
+          ) : (
+            <div className="space-y-6 animate-fade-in">
+              <button
+                onClick={handleReset}
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-all duration-300 hover:-translate-x-1 group"
+              >
+                <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+                <span>Back to levels</span>
+              </button>
+              <div className="text-center">
+                <span
+                  className="inline-block px-4 py-2 rounded-full text-sm font-semibold mb-4 animate-pulse-subtle"
+                  style={{
+                    backgroundColor: `${LEVEL_COLORS[selectedLevel]}20`,
+                    color: LEVEL_COLORS[selectedLevel],
+                    boxShadow: `0 0 20px ${LEVEL_COLORS[selectedLevel]}30`,
+                  }}
+                >
+                  {selectedLevel.charAt(0).toUpperCase() +
+                    selectedLevel.slice(1)}{" "}
+                  Level
+                </span>
+              </div>
+              <SpinningWheel
+                questions={questions}
+                onSpinComplete={handleSpinComplete}
+                isSpinning={isSpinning}
+                setIsSpinning={setIsSpinning}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="border-t border-border/50 bg-background/60 backdrop-blur-xl py-4">
+        <div className="container mx-auto px-4 text-center text-xs text-muted-foreground">
+          <p className="flex items-center justify-center gap-2">
+            <span
+              className="inline-block w-2 h-2 rounded-full animate-pulse"
+              style={{ backgroundColor: "#34A853" }}
+            />
+            Powered by{" "}
+            <span className="font-semibold text-foreground">
+              Google Developer Groups
+            </span>{" "}
+            SOE CUSAT
+          </p>
+        </div>
       </footer>
-    </div>
+    </main>
   );
 }
