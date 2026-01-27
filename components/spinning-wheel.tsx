@@ -127,7 +127,7 @@ export function SpinningWheel({
       const angle = (i * Math.PI * 2) / numSegments;
       const innerR = radius - 15;
       const outerR = radius + 2;
-      
+
       ctx.beginPath();
       ctx.moveTo(
         centerX + Math.cos(angle) * innerR,
@@ -147,7 +147,7 @@ export function SpinningWheel({
     ctx.arc(centerX, centerY, 50, 0, 2 * Math.PI);
     ctx.fillStyle = "#ffffff";
     ctx.fill();
-    
+
     // Center ring
     ctx.strokeStyle = "#d0d0d0";
     ctx.lineWidth = 3;
@@ -164,22 +164,22 @@ export function SpinningWheel({
     ctx.font = "bold 20px system-ui, -apple-system, sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    
+
     // Measure text to position each letter
     const letterSpacing = 12;
-    
+
     // G - Red
     ctx.fillStyle = "#EA4335";
     ctx.fillText("G", centerX - letterSpacing, centerY - 9);
-    
+
     // D - Green
     ctx.fillStyle = "#34A853";
     ctx.fillText("D", centerX, centerY - 9);
-    
+
     // G - Yellow
     ctx.fillStyle = "#FBBC05";
     ctx.fillText("G", centerX + letterSpacing, centerY - 9);
-    
+
     // SOE in black
     ctx.font = "13px system-ui, -apple-system, sans-serif";
     ctx.fillStyle = "#000000";
@@ -188,7 +188,7 @@ export function SpinningWheel({
     // Draw pointer (triangle on right side)
     const pointerSize = 26;
     const pointerOffset = 10;
-    
+
     ctx.beginPath();
     ctx.moveTo(size - pointerOffset, centerY - pointerSize);
     ctx.lineTo(size - pointerOffset, centerY + pointerSize);
@@ -206,7 +206,7 @@ export function SpinningWheel({
     pointerGradient.addColorStop(1, "#e0e0e0");
     ctx.fillStyle = pointerGradient;
     ctx.fill();
-    
+
     ctx.strokeStyle = "rgba(0, 0, 0, 0.15)";
     ctx.lineWidth = 2;
     ctx.stroke();
@@ -228,11 +228,18 @@ export function SpinningWheel({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const size = 340;
-    canvas.width = size;
-    canvas.height = size;
+    // Responsive size
+    const updateSize = () => {
+      const parentWidth = canvas.parentElement?.clientWidth || 340;
+      const size = Math.min(parentWidth, 340);
+      canvas.width = size;
+      canvas.height = size;
+      drawWheel(ctx, size, currentRotation);
+    };
 
-    drawWheel(ctx, size, currentRotation);
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
   }, [currentRotation, questions]);
 
   const spin = () => {
@@ -242,7 +249,7 @@ export function SpinningWheel({
     const spinDuration = 4500;
     const extraSpins = 5 + Math.random() * 3;
     const targetQuestionIndex = Math.floor(Math.random() * questions.length);
-    
+
     // Map question to segment (distribute questions evenly across 4 segments)
     const targetSegment = targetQuestionIndex % numSegments;
     const segmentAngle = (2 * Math.PI) / numSegments;
@@ -311,19 +318,20 @@ export function SpinningWheel({
   }, [isSpinning, isHovered]);
 
   return (
-    <div className="flex flex-col items-center gap-8">
+    <div className="flex flex-col items-center gap-8 w-full">
       <div
-        className="relative group"
+        className="relative group w-full flex justify-center"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         <canvas
           ref={canvasRef}
-          className={`relative z-10 transition-all duration-300 ${
-            !isSpinning && isHovered ? "scale-[1.02]" : ""
-          }`}
+          className={`relative z-10 transition-all duration-300 ${!isSpinning && isHovered ? "scale-[1.02]" : ""
+            }`}
           style={{
-            filter: `drop-shadow(0 8px 24px rgba(0, 0, 0, 0.15))`,
+            filter: `drop-shadow(0 12px 32px rgba(0, 0, 0, 0.2))`,
+            maxWidth: "100%",
+            height: "auto",
           }}
         />
       </div>
@@ -331,26 +339,25 @@ export function SpinningWheel({
       <button
         onClick={spin}
         disabled={isSpinning}
-        className={`relative px-12 py-4 text-lg font-semibold text-white rounded-lg transition-all duration-300 ${
-          isSpinning
-            ? "cursor-not-allowed opacity-60"
-            : "hover:scale-105 active:scale-95"
-        }`}
+        className={`relative px-12 py-4 text-xl font-bold text-white rounded-full transition-all duration-500 ${isSpinning
+          ? "cursor-not-allowed opacity-80"
+          : "hover:scale-105 active:scale-95 hover:shadow-[0_0_30px_rgba(234,67,53,0.5)]"
+          }`}
         style={{
           background: isSpinning
-            ? "linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%)"
-            : "linear-gradient(135deg, #2a2a2a 0%, #000000 100%)",
+            ? "linear-gradient(135deg, #fecaca 0%, #ef4444 100%)"
+            : "linear-gradient(135deg, #EA4335 0%, #B22222 100%)",
           boxShadow: isSpinning
-            ? "0 4px 12px rgba(0, 0, 0, 0.3)"
-            : "0 6px 20px rgba(0, 0, 0, 0.4)",
-          border: "1px solid #404040",
+            ? "0 4px 12px rgba(234, 67, 53, 0.2)"
+            : "0 10px 30px rgba(234, 67, 53, 0.4)",
+          border: "3px solid #ffffff",
         }}
       >
-        <span className="relative z-10 flex items-center gap-3">
+        <span className="relative z-10 flex items-center gap-3 tracking-wider">
           {isSpinning ? (
             <>
               <svg
-                className="animate-spin h-5 w-5"
+                className="animate-spin h-6 w-6"
                 viewBox="0 0 24 24"
                 fill="none"
               >
@@ -363,12 +370,12 @@ export function SpinningWheel({
                   strokeWidth="4"
                 />
                 <path
-                  className="opacity-75"
+                  className="opacity-100"
                   fill="currentColor"
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                 />
               </svg>
-              Spinning...
+              SPINNING...
             </>
           ) : (
             "SPIN THE WHEEL"

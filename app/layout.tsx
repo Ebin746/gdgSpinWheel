@@ -8,25 +8,12 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'GDG DSA Lucky Draw | Spin & Win Coding Challenges',
+  title: 'GDG SOE CUSAT',
   description: 'Spin the wheel and get a random DSA challenge at GDG events! Choose your difficulty level from Basic to Pro and test your coding skills.',
   generator: 'v0.app',
   icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
+    icon: '/GDSC_Logo_White_Background_0.png',
+    apple: '/GDSC_Logo_White_Background_0.png',
   },
 }
 
