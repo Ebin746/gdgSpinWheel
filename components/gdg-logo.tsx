@@ -2,9 +2,13 @@
 
 import Image from "next/image";
 
-export function GDGLogo({ className = "" }: { className?: string }) {
+export function GDGLogo({ className = "", onClick }: { className?: string; onClick?: () => void }) {
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-3 text-left transition-all duration-300 ${onClick ? "hover:opacity-80 active:scale-95" : ""} ${className}`}
+      disabled={!onClick}
+    >
       <style jsx global>{`
         @keyframes gdg-color-cycle {
           0%, 100% { color: #4285F4; } /* Blue */
@@ -31,6 +35,6 @@ export function GDGLogo({ className = "" }: { className?: string }) {
           SOE CUSAT
         </span>
       </div>
-    </div>
+    </button>
   );
 }
