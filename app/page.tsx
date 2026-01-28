@@ -52,34 +52,27 @@ export default function LuckyDrawPage() {
     }
   }, []);
 
-  // Check if user already spun for selected level - FIX: Only check once when level is first selected
+  // No longer checking for existing results to force unlimited spins
   useEffect(() => {
     if (selectedLevel && !result) {
-      const existingResult = storedResults.find(
-        (r) => r.level === selectedLevel
-      );
-      if (existingResult) {
-        setResult(existingResult.question);
-        setIsNewResult(false);
-      }
+      // Logic removed to allow unlimited spins
     }
-  }, [selectedLevel]); // Remove storedResults and result from dependencies to prevent re-triggering
+  }, [selectedLevel]);
 
-  const handleLevelSelect = (level: string) => {
-    // Reset states before selecting new level
-    setResult(null);
+  const handleLevelSelect = (level: string, questionFromResult?: Question) => {
+    // Reset states
     setIsNewResult(false);
-    setSelectedLevel(level);
     setShowHistory(false);
 
-    // Check for existing result after state is cleared
-    setTimeout(() => {
-      const existingResult = storedResults.find((r) => r.level === level);
-      if (existingResult) {
-        setResult(existingResult.question);
-        setIsNewResult(false);
-      }
-    }, 0);
+    if (questionFromResult) {
+      // If called from history, show that specific result
+      setResult(questionFromResult);
+      setSelectedLevel(level);
+    } else {
+      // Normal level select
+      setResult(null);
+      setSelectedLevel(level);
+    }
   };
 
   const handleSpinComplete = (question: Question) => {
@@ -87,22 +80,19 @@ export default function LuckyDrawPage() {
       return;
     }
 
-    // Store result
+    // Store result - always append to allow multiple results for the same level
     const newResult: StoredResult = {
       level: selectedLevel!,
       question,
       timestamp: Date.now(),
     };
 
-    const updatedResults = [
-      ...storedResults.filter((r) => r.level !== selectedLevel),
-      newResult,
-    ];
+    const updatedResults = [newResult, ...storedResults]; // Add new result to the top
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedResults));
     setStoredResults(updatedResults);
 
-    // Set result state - this triggers the re-render
+    // Set result state
     setIsNewResult(true);
     setResult(question);
   };
@@ -128,8 +118,19 @@ export default function LuckyDrawPage() {
   if (!mounted) {
     return (
       <main className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-pulse">
-          <GDGLogo className="h-12" />
+        <div className="flex gap-2">
+          {["G", "D", "G"].map((letter, i) => (
+            <span
+              key={i}
+              className="text-6xl font-black animate-bounce"
+              style={{
+                color: i === 0 ? "#4285F4" : i === 1 ? "#34A853" : "#FBBC05",
+                animationDelay: `${i * 150}ms`,
+              }}
+            >
+              {letter}
+            </span>
+          ))}
         </div>
       </main>
     );
@@ -169,15 +170,19 @@ export default function LuckyDrawPage() {
       {/* Header */}
       <header className="border-b border-border/50 sticky top-0 bg-background/60 backdrop-blur-xl z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <GDGLogo className="h-10 animate-fade-in" />
+          <GDGLogo
+            className="h-10 animate-fade-in"
+            onClick={isSpinning ? undefined : handleReset}
+          />
           <div className="flex items-center gap-2">
             {storedResults.length > 0 && (
               <Button
                 variant="ghost"
                 size="sm"
+                disabled={isSpinning}
                 onClick={() => setShowHistory(!showHistory)}
                 className={`gap-2 text-muted-foreground hover:text-foreground transition-all duration-300 ${showHistory ? "bg-white/10" : ""
-                  }`}
+                  } ${isSpinning ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 <History className="w-4 h-4" />
                 <span className="hidden sm:inline">
@@ -190,31 +195,43 @@ export default function LuckyDrawPage() {
       </header>
 
       {/* Scrollable Content Area */}
-      <div className="flex-1 flex flex-col items-center justify-center py-6 md:py-10">
-        {/* Main Content */}
+      <div className="flex-1 flex flex-col items-center justify-start pt-2 pb-10">
         <div className="w-full max-w-7xl px-4 relative z-10">
-          {/* History Panel */}
-          {showHistory && storedResults.length > 0 && (
-            <div className="mb-8 p-4 rounded-2xl border border-border bg-card/50 backdrop-blur-sm animate-slide-down">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-base font-semibold text-foreground">
-                  Your Previous Results
-                </h3>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={clearHistory}
-                  className="text-destructive hover:text-destructive gap-2"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  Clear All
-                </Button>
+          {showHistory && storedResults.length > 0 ? (
+            /* History View */
+            <div className="animate-fade-in w-full">
+              <div className="flex flex-col gap-6 mb-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
+                  <div className="flex items-center gap-2 sm:gap-4">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowHistory(false)}
+                      className="gap-2 text-muted-foreground hover:text-foreground px-2 sm:px-3"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                      <span className="text-sm sm:text-base">Back to Home</span>
+                    </Button>
+                    <h2 className="text-xl sm:text-2xl font-bold text-foreground">
+                      Spin History
+                    </h2>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearHistory}
+                    className="text-destructive hover:text-secondary-foreground hover:bg-destructive/10 gap-2 w-fit"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    <span>Clear All</span>
+                  </Button>
+                </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {storedResults.map((r, index) => (
                   <button
-                    key={r.level}
-                    onClick={() => handleLevelSelect(r.level)}
+                    key={`${r.level}-${r.timestamp}`}
+                    onClick={() => handleLevelSelect(r.level, r.question)}
                     className="p-3 rounded-xl border border-border hover:border-white/30 transition-all duration-300 text-left bg-secondary/30 hover:bg-secondary/50 hover:scale-[1.02] animate-fade-in-up group"
                     style={{
                       animationDelay: `${index * 100}ms`,
@@ -234,108 +251,88 @@ export default function LuckyDrawPage() {
                 ))}
               </div>
             </div>
-          )}
+          ) : (
+            /* Home View */
+            <div className="w-full flex flex-col items-center">
+              {!selectedLevel && (
+                <div className="text-center mb-8 animate-fade-in">
+                  <h1 className="text-4xl md:text-6xl font-bold mb-4 text-balance">
+                    <span
+                      className="inline-block animate-letter"
+                      style={{ animationDelay: "0ms", color: "#4285F4" }}
+                    >
+                      D
+                    </span>
+                    <span
+                      className="inline-block animate-letter"
+                      style={{ animationDelay: "100ms", color: "#EA4335" }}
+                    >
+                      S
+                    </span>
+                    <span
+                      className="inline-block animate-letter"
+                      style={{ animationDelay: "200ms", color: "#FBBC05" }}
+                    >
+                      A
+                    </span>
+                    <span className="text-foreground"> Lucky Draw</span>
+                  </h1>
+                  <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto text-balance">
+                    Spin the wheel and get a random DSA challenge! Choose your
+                    difficulty level and test your coding skills.
+                  </p>
+                </div>
+              )}
 
-          {/* Title Section - Only show when no level is selected */}
-          {!selectedLevel && (
-            <div className="text-center mb-8 animate-fade-in">
-              <h1 className="text-4xl md:text-6xl font-bold mb-4 text-balance">
-                <span
-                  className="inline-block animate-letter"
-                  style={{ animationDelay: "0ms", color: "#4285F4" }}
-                >
-                  D
-                </span>
-                <span
-                  className="inline-block animate-letter"
-                  style={{ animationDelay: "100ms", color: "#EA4335" }}
-                >
-                  S
-                </span>
-                <span
-                  className="inline-block animate-letter"
-                  style={{ animationDelay: "200ms", color: "#FBBC05" }}
-                >
-                  A
-                </span>
-                <span className="text-foreground"> Lucky Draw</span>
-              </h1>
-              <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto text-balance">
-                Spin the wheel and get a random DSA challenge! Choose your
-                difficulty level and test your coding skills.
-              </p>
+              <div className="w-full flex flex-col items-center justify-center">
+                {!selectedLevel ? (
+                  <div className="space-y-8 w-full">
+                    <h2 className="text-xl font-semibold text-center text-foreground animate-fade-in">
+                      Select Your Difficulty Level
+                    </h2>
+                    <LevelSelector
+                      onSelect={handleLevelSelect}
+                      selectedLevel={selectedLevel}
+                    />
+                  </div>
+                ) : result ? (
+                  <div className="space-y-8 animate-fade-in w-full max-w-3xl flex flex-col items-center">
+                    <div className="w-full flex justify-start">
+                      <button
+                        onClick={handleReset}
+                        className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-all duration-300 hover:-translate-x-1 group"
+                      >
+                        <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+                        <span>Back to levels</span>
+                      </button>
+                    </div>
+                    <div className="w-full">
+                      <QuestionResult
+                        key={`${result.id}-${Date.now()}`} // Use key to force re-animation when switching from history
+                        question={result}
+                        level={selectedLevel}
+                        onReset={handleReset}
+                        isNewResult={isNewResult}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-8 animate-fade-in w-full flex flex-col items-center">
+                    <div className="w-full flex justify-center">
+                      <SpinningWheel
+                        questions={questions}
+                        onSpinComplete={handleSpinComplete}
+                        isSpinning={isSpinning}
+                        setIsSpinning={setIsSpinning}
+                        selectedLevel={selectedLevel}
+                        onReset={handleReset}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
-
-          {/* Content Area */}
-          <div className="w-full flex flex-col items-center justify-center">
-            {!selectedLevel ? (
-              <div className="space-y-8 w-full">
-                <h2 className="text-xl font-semibold text-center text-foreground animate-fade-in">
-                  Select Your Difficulty Level
-                </h2>
-                <LevelSelector
-                  onSelect={handleLevelSelect}
-                  selectedLevel={selectedLevel}
-                />
-              </div>
-            ) : result ? (
-              <div className="space-y-8 animate-fade-in w-full max-w-3xl flex flex-col items-center">
-                <div className="w-full flex justify-start">
-                  <button
-                    onClick={handleReset}
-                    className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-all duration-300 hover:-translate-x-1 group"
-                  >
-                    <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-                    <span>Back to levels</span>
-                  </button>
-                </div>
-                <div className="w-full">
-                  <QuestionResult
-                    key={result.id}
-                    question={result}
-                    level={selectedLevel}
-                    onReset={handleReset}
-                    isNewResult={isNewResult}
-                  />
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-8 animate-fade-in w-full flex flex-col items-center">
-                <div className="w-full max-w-3xl flex justify-start">
-                  <button
-                    onClick={handleReset}
-                    className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-all duration-300 hover:-translate-x-1 group"
-                  >
-                    <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-                    <span>Back to levels</span>
-                  </button>
-                </div>
-                <div className="text-center">
-                  <span
-                    className="inline-block px-6 py-2 rounded-full text-base font-semibold mb-6 animate-pulse-subtle"
-                    style={{
-                      backgroundColor: `${LEVEL_COLORS[selectedLevel]}20`,
-                      color: LEVEL_COLORS[selectedLevel],
-                      boxShadow: `0 0 20px ${LEVEL_COLORS[selectedLevel]}30`,
-                    }}
-                  >
-                    {selectedLevel.charAt(0).toUpperCase() +
-                      selectedLevel.slice(1)}{" "}
-                    Level
-                  </span>
-                </div>
-                <div className="w-full flex justify-center">
-                  <SpinningWheel
-                    questions={questions}
-                    onSpinComplete={handleSpinComplete}
-                    isSpinning={isSpinning}
-                    setIsSpinning={setIsSpinning}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
         </div>
       </div>
 

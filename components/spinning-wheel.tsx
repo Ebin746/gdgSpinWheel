@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
+import { X } from "lucide-react";
 
 interface Question {
   id: string;
@@ -13,6 +14,8 @@ interface SpinningWheelProps {
   onSpinComplete: (question: Question) => void;
   isSpinning: boolean;
   setIsSpinning: (spinning: boolean) => void;
+  selectedLevel: string;
+  onReset: () => void;
 }
 
 // Google Colors for 4 segments - Red, Blue, Green, Yellow
@@ -23,11 +26,20 @@ const GOOGLE_COLORS = [
   { base: "#FBBC05", light: "#FFD54F", dark: "#F9A825" }, // Yellow
 ];
 
+const LEVEL_COLORS: Record<string, string> = {
+  basic: "#34A853",
+  medium: "#FBBC05",
+  advanced: "#4285F4",
+  pro: "#EA4335",
+};
+
 export function SpinningWheel({
   questions,
   onSpinComplete,
   isSpinning,
   setIsSpinning,
+  selectedLevel,
+  onReset,
 }: SpinningWheelProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | undefined>(undefined);
@@ -318,70 +330,110 @@ export function SpinningWheel({
   }, [isSpinning, isHovered]);
 
   return (
-    <div className="flex flex-col items-center gap-8 w-full">
-      <div
-        className="relative group w-full flex justify-center"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <canvas
-          ref={canvasRef}
-          className={`relative z-10 transition-all duration-300 ${!isSpinning && isHovered ? "scale-[1.02]" : ""
-            }`}
-          style={{
-            filter: `drop-shadow(0 12px 32px rgba(0, 0, 0, 0.2))`,
-            maxWidth: "100%",
-            height: "auto",
-          }}
-        />
+    <div className="flex flex-col items-center w-full max-w-md mx-auto">
+      {/* Content Section */}
+      <div className="text-center mb-4">
+        <p className="text-muted-foreground text-sm uppercase tracking-widest font-medium mb-1">
+          Are you feeling lucky?
+        </p>
+        <h3 className="text-xl font-bold text-foreground">
+          Spin to get your next DSA challenge
+        </h3>
       </div>
 
-      <button
-        onClick={spin}
-        disabled={isSpinning}
-        className={`relative px-12 py-4 text-xl font-bold text-white rounded-full transition-all duration-500 ${isSpinning
-          ? "cursor-not-allowed opacity-80"
-          : "hover:scale-105 active:scale-95 hover:shadow-[0_0_30px_rgba(234,67,53,0.5)]"
-          }`}
-        style={{
-          background: isSpinning
-            ? "linear-gradient(135deg, #fecaca 0%, #ef4444 100%)"
-            : "linear-gradient(135deg, #EA4335 0%, #B22222 100%)",
-          boxShadow: isSpinning
-            ? "0 4px 12px rgba(234, 67, 53, 0.2)"
-            : "0 10px 30px rgba(234, 67, 53, 0.4)",
-          border: "3px solid #ffffff",
-        }}
-      >
-        <span className="relative z-10 flex items-center gap-3 tracking-wider">
-          {isSpinning ? (
-            <>
-              <svg
-                className="animate-spin h-6 w-6"
-                viewBox="0 0 24 24"
-                fill="none"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-100"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                />
-              </svg>
-              SPINNING...
-            </>
-          ) : (
-            "SPIN THE WHEEL"
-          )}
-        </span>
-      </button>
+      {/* Wheel and Button Container */}
+      <div className="relative flex flex-col items-center gap-6 w-full bg-white/5 p-6 rounded-[2.5rem] border border-white/10 backdrop-blur-sm shadow-2xl">
+        {/* Close Button Inside */}
+        <button
+          onClick={onReset}
+          disabled={isSpinning}
+          className={`absolute top-4 right-4 z-20 p-2 rounded-full bg-white/5 border border-white/10 text-muted-foreground transition-all duration-300 ${isSpinning
+              ? "opacity-30 cursor-not-allowed"
+              : "hover:bg-white/10 hover:text-foreground hover:rotate-90"
+            }`}
+          aria-label="Back to levels"
+        >
+          <X className="w-4 h-4" />
+        </button>
+
+        {/* Level Indicator Inside */}
+        <div className="flex justify-center w-full">
+          <span
+            className="inline-block px-5 py-1.5 rounded-full text-sm font-bold animate-fade-in"
+            style={{
+              backgroundColor: `${LEVEL_COLORS[selectedLevel]}20`,
+              color: LEVEL_COLORS[selectedLevel],
+              border: `1px solid ${LEVEL_COLORS[selectedLevel]}40`,
+            }}
+          >
+            {selectedLevel.toUpperCase()} LEVEL
+          </span>
+        </div>
+
+        <div
+          className="relative group w-full flex justify-center"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <canvas
+            ref={canvasRef}
+            className={`relative z-10 transition-all duration-300 ${!isSpinning && isHovered ? "scale-[1.02]" : ""
+              }`}
+            style={{
+              filter: `drop-shadow(0 12px 32px rgba(0, 0, 0, 0.2))`,
+              maxWidth: "280px", // More compact
+              height: "auto",
+            }}
+          />
+        </div>
+
+        <button
+          onClick={spin}
+          disabled={isSpinning}
+          className={`relative w-full py-4 text-lg font-bold text-white rounded-2xl transition-all duration-500 ${isSpinning
+            ? "cursor-not-allowed opacity-80"
+            : "hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_0_30px_rgba(234,67,53,0.3)]"
+            }`}
+          style={{
+            background: isSpinning
+              ? "linear-gradient(135deg, #fecaca 0%, #ef4444 100%)"
+              : "linear-gradient(135deg, #EA4335 0%, #B22222 100%)",
+            boxShadow: isSpinning
+              ? "0 4px 12px rgba(234, 67, 53, 0.1)"
+              : "0 10px 25px rgba(234, 67, 53, 0.3)",
+            border: "2px solid rgba(255, 255, 255, 0.2)",
+          }}
+        >
+          <span className="relative z-10 flex items-center justify-center gap-3 tracking-wider">
+            {isSpinning ? (
+              <>
+                <svg
+                  className="animate-spin h-5 w-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-100"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+                SPINNING...
+              </>
+            ) : (
+              "SPIN THE WHEEL"
+            )}
+          </span>
+        </button>
+      </div>
     </div>
   );
 }

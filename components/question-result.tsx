@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink, RotateCcw, Sparkles } from "lucide-react";
+import { ExternalLink, RotateCcw, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 
@@ -75,6 +75,14 @@ export function QuestionResult({
           boxShadow: `0 0 60px ${levelColor}20`,
         }}
       >
+        {/* Close Button */}
+        <button
+          onClick={onReset}
+          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/5 hover:bg-white/10 text-muted-foreground hover:text-foreground transition-all duration-300 hover:rotate-90 border border-white/10"
+          aria-label="Close result"
+        >
+          <X className="w-5 h-5" />
+        </button>
         {/* Confetti celebration */}
         {confetti.length > 0 && (
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -121,10 +129,6 @@ export function QuestionResult({
               style={{ animationDelay: "0s" }}
             />
             <Sparkles
-              className="absolute top-4 right-4 w-5 h-5 text-yellow-400 animate-sparkle"
-              style={{ animationDelay: "0.2s" }}
-            />
-            <Sparkles
               className="absolute bottom-20 left-8 w-4 h-4 text-yellow-400 animate-sparkle"
               style={{ animationDelay: "0.4s" }}
             />
@@ -154,7 +158,7 @@ export function QuestionResult({
               href={question.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-semibold text-white transition-all duration-300 hover:scale-105 hover:shadow-2xl overflow-hidden relative"
+              className="group inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full font-semibold text-white transition-all duration-300 hover:scale-105 hover:shadow-2xl overflow-hidden relative"
               style={{
                 background: `linear-gradient(135deg, ${levelColor}, ${levelColor}cc)`,
                 boxShadow: `0 4px 20px ${levelColor}40`,
@@ -167,14 +171,6 @@ export function QuestionResult({
               <span className="relative">Solve Challenge</span>
               <ExternalLink className="w-4 h-4 relative transition-transform group-hover:translate-x-1" />
             </a>
-            <Button
-              onClick={onReset}
-              variant="outline"
-              className="gap-2 rounded-full border-white/20 hover:bg-white/10 text-foreground bg-transparent transition-all duration-300 hover:scale-105"
-            >
-              <RotateCcw className="w-4 h-4 transition-transform hover:rotate-180" />
-              <span>Try Another Level</span>
-            </Button>
           </div>
         </div>
       </div>
