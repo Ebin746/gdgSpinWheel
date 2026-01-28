@@ -199,7 +199,7 @@ export default function LuckyDrawPage() {
       </header>
 
       {/* Scrollable Content Area */}
-      <div className="flex-1 flex flex-col items-center justify-start pt-2 pb-10">
+      <div className="flex-1 flex flex-col items-center justify-center pb-10">
         <div className="w-full max-w-7xl px-4 relative z-10">
           {showHistory && storedResults.length > 0 ? (
             /* History View */
