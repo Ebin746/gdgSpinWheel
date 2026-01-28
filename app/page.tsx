@@ -275,11 +275,11 @@ export default function LuckyDrawPage() {
                     >
                       A
                     </span>
-                    <span className="text-foreground"> Lucky Draw</span>
+                    <span className="text-foreground"> Platform</span>
                   </h1>
                   <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto text-balance">
-                    Spin the wheel and get a random DSA challenge! Choose your
-                    difficulty level and test your coding skills.
+                    Master your technical interviews with our curated collection of LeetCode challenges.
+                    Choose your level and start practicing today.
                   </p>
                 </div>
               )}

@@ -334,10 +334,10 @@ export function SpinningWheel({
       {/* Content Section */}
       <div className="text-center mb-4">
         <p className="text-muted-foreground text-sm uppercase tracking-widest font-medium mb-1">
-          Are you feeling lucky?
+          READY TO PRACTICE?
         </p>
         <h3 className="text-xl font-bold text-foreground">
-          Spin to get your next DSA challenge
+          Generate a curated LeetCode problem
         </h3>
       </div>
 
@@ -348,8 +348,8 @@ export function SpinningWheel({
           onClick={onReset}
           disabled={isSpinning}
           className={`absolute top-4 right-4 z-20 p-2 rounded-full bg-white/5 border border-white/10 text-muted-foreground transition-all duration-300 ${isSpinning
-              ? "opacity-30 cursor-not-allowed"
-              : "hover:bg-white/10 hover:text-foreground hover:rotate-90"
+            ? "opacity-30 cursor-not-allowed"
+            : "hover:bg-white/10 hover:text-foreground hover:rotate-90"
             }`}
           aria-label="Back to levels"
         >
@@ -429,7 +429,7 @@ export function SpinningWheel({
                 SPINNING...
               </>
             ) : (
-              "SPIN THE WHEEL"
+              "GET CHALLENGE"
             )}
           </span>
         </button>

@@ -61,38 +61,53 @@
       },
       {
         "id": "medium-3",
+        "title": "Reverse Words in a String",
+        "link": "https://leetcode.com/problems/reverse-words-in-a-string/"
+      },
+      {
+        "id": "medium-4",
         "title": "Maximum Subarray",
         "link": "https://leetcode.com/problems/maximum-subarray"
       },
       {
-        "id": "medium-4",
+        "id": "medium-5",
         "title": "Rotate Array",
         "link": "https://leetcode.com/problems/rotate-array"
       },
       {
-        "id": "medium-5",
+        "id": "medium-6",
         "title": "Find the Duplicate Number",
-        "link": "https://leetcode.com/problems/find-the-duplicate-number"
+        "link": "https://leetcode.com/problems/find-the-duplicate-number/"
       },
       {
-        "id": "medium-6",
+        "id": "medium-7",
         "title": "Spiral Matrix",
         "link": "https://leetcode.com/problems/spiral-matrix"
       },
       {
-        "id": "medium-7",
+        "id": "medium-8",
+        "title": "Longest Palindromic Substring",
+        "link": "https://leetcode.com/problems/longest-palindromic-substring/"
+      },
+      {
+        "id": "medium-9",
         "title": "3Sum",
         "link": "https://leetcode.com/problems/3sum"
       },
       {
-        "id": "medium-8",
+        "id": "medium-10",
         "title": "Integer to English Words",
         "link": "https://leetcode.com/problems/integer-to-english-words"
       },
       {
-        "id": "medium-9",
+        "id": "medium-11",
         "title": "Valid Number",
         "link": "https://leetcode.com/problems/valid-number"
+      },
+      {
+        "id": "medium-12",
+        "title": "Longest Substring Without Repeating Characters",
+        "link": "https://leetcode.com/problems/longest-substring-without-repeating-characters/"
       }
     ]
   },
