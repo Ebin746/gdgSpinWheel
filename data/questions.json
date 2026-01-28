@@ -1,98 +1,144 @@
 {
   "basic": {
     "label": "Basic",
-    "description": "Fundamentals & Easy Problems",
+    "description": "Fundamental Problem Solving",
     "questions": [
       {
         "id": "basic-1",
-        "title": "Two Sum",
-        "link": "https://leetcode.com/problems/two-sum/"
+        "title": "Running Sum of 1D Array",
+        "link": "https://leetcode.com/problems/running-sum-of-1d-array"
       },
       {
         "id": "basic-2",
-        "title": "Reverse String",
-        "link": "https://leetcode.com/problems/reverse-string/"
+        "title": "Concatenation of Array",
+        "link": "https://leetcode.com/problems/concatenation-of-array"
       },
       {
         "id": "basic-3",
-        "title": "Valid Parentheses",
-        "link": "https://leetcode.com/problems/valid-parentheses/"
+        "title": "Shuffle the Array",
+        "link": "https://leetcode.com/problems/shuffle-the-array"
       },
       {
         "id": "basic-4",
-        "title": "Merge Two Sorted Lists",
-        "link": "https://leetcode.com/problems/merge-two-sorted-lists/"
+        "title": "Find Numbers with Even Number of Digits",
+        "link": "https://leetcode.com/problems/find-numbers-with-even-number-of-digits"
       },
       {
         "id": "basic-5",
-        "title": "Best Time to Buy and Sell Stock",
-        "link": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/"
+        "title": "Reverse String",
+        "link": "https://leetcode.com/problems/reverse-string"
       },
       {
         "id": "basic-6",
-        "title": "Valid Palindrome",
-        "link": "https://leetcode.com/problems/valid-palindrome/"
+        "title": "Rotate String",
+        "link": "https://leetcode.com/problems/rotate-string"
       },
       {
         "id": "basic-7",
-        "title": "Maximum Depth of Binary Tree",
-        "link": "https://leetcode.com/problems/maximum-depth-of-binary-tree/"
+        "title": "Isomorphic Strings",
+        "link": "https://leetcode.com/problems/isomorphic-strings"
       },
       {
         "id": "basic-8",
-        "title": "Climbing Stairs",
-        "link": "https://leetcode.com/problems/climbing-stairs/"
+        "title": "Roman to Integer",
+        "link": "https://leetcode.com/problems/roman-to-integer"
       }
     ]
   },
   "medium": {
     "label": "Medium",
-    "description": "Intermediate Challenges",
+    "description": "Intermediate Problem Solving",
     "questions": [
       {
         "id": "medium-1",
-        "title": "Add Two Numbers",
-        "link": "https://leetcode.com/problems/add-two-numbers/"
+        "title": "Day of the Year",
+        "link": "https://leetcode.com/problems/day-of-the-year"
       },
       {
         "id": "medium-2",
-        "title": "Longest Substring Without Repeating Characters",
-        "link": "https://leetcode.com/problems/longest-substring-without-repeating-characters/"
+        "title": "Count and Say",
+        "link": "https://leetcode.com/problems/count-and-say"
       },
       {
         "id": "medium-3",
-        "title": "3Sum",
-        "link": "https://leetcode.com/problems/3sum/"
+        "title": "Maximum Subarray",
+        "link": "https://leetcode.com/problems/maximum-subarray"
       },
       {
         "id": "medium-4",
-        "title": "Binary Tree Level Order Traversal",
-        "link": "https://leetcode.com/problems/binary-tree-level-order-traversal/"
+        "title": "Rotate Array",
+        "link": "https://leetcode.com/problems/rotate-array"
       },
       {
         "id": "medium-5",
-        "title": "Group Anagrams",
-        "link": "https://leetcode.com/problems/group-anagrams/"
+        "title": "Find the Duplicate Number",
+        "link": "https://leetcode.com/problems/find-the-duplicate-number"
       },
       {
         "id": "medium-6",
-        "title": "Product of Array Except Self",
-        "link": "https://leetcode.com/problems/product-of-array-except-self/"
+        "title": "Spiral Matrix",
+        "link": "https://leetcode.com/problems/spiral-matrix"
       },
       {
         "id": "medium-7",
-        "title": "Container With Most Water",
-        "link": "https://leetcode.com/problems/container-with-most-water/"
+        "title": "3Sum",
+        "link": "https://leetcode.com/problems/3sum"
       },
       {
         "id": "medium-8",
-        "title": "Rotate Image",
-        "link": "https://leetcode.com/problems/rotate-image/"
+        "title": "Integer to English Words",
+        "link": "https://leetcode.com/problems/integer-to-english-words"
       },
       {
         "id": "medium-9",
-        "title": "Spiral Matrix",
-        "link": "https://leetcode.com/problems/spiral-matrix/"
+        "title": "Valid Number",
+        "link": "https://leetcode.com/problems/valid-number"
+      }
+    ]
+  },
+  "pro": {
+    "label": "Pro",
+    "description": "Advanced Data Structure Practice",
+    "questions": [
+      {
+        "id": "pro-1",
+        "title": "Valid Parentheses",
+        "link": "https://leetcode.com/problems/valid-parentheses"
+      },
+      {
+        "id": "pro-2",
+        "title": "Majority Element",
+        "link": "https://leetcode.com/problems/majority-element"
+      },
+      {
+        "id": "pro-3",
+        "title": "Intersection of Two Arrays",
+        "link": "https://leetcode.com/problems/intersection-of-two-arrays"
+      },
+      {
+        "id": "pro-4",
+        "title": "Implement Stack Using Queues",
+        "link": "https://leetcode.com/problems/implement-stack-using-queues"
+      },
+      {
+        "id": "pro-5",
+        "title": "Remove Duplicates from Sorted List",
+        "link": "https://leetcode.com/problems/remove-duplicates-from-sorted-list"
+      },
+      {
+        "id": "pro-6",
+        "title": "Middle of the Linked List",
+        "link": "https://leetcode.com/problems/middle-of-the-linked-list"
+      },
+      {
+        "id": "pro-7",
+        "title": "Linked List Cycle",
+        "link": "https://leetcode.com/problems/linked-list-cycle"
+      },
+      {
+        "id": "pro-8",
+        "title": "Reverse Linked List",
+        "link": "https://leetcode.com/problems/reverse-linked-list"
       }
     ]
   },
@@ -102,109 +148,43 @@
     "questions": [
       {
         "id": "advanced-1",
-        "title": "LRU Cache",
-        "link": "https://leetcode.com/problems/lru-cache/"
+        "title": "Search in a Binary Search Tree",
+        "link": "https://leetcode.com/problems/search-in-a-binary-search-tree"
       },
       {
         "id": "advanced-2",
-        "title": "Word Search II",
-        "link": "https://leetcode.com/problems/word-search-ii/"
+        "title": "Invert Binary Tree",
+        "link": "https://leetcode.com/problems/invert-binary-tree"
       },
       {
         "id": "advanced-3",
-        "title": "Course Schedule II",
-        "link": "https://leetcode.com/problems/course-schedule-ii/"
+        "title": "Binary Tree Level Order Traversal",
+        "link": "https://leetcode.com/problems/binary-tree-level-order-traversal"
       },
       {
         "id": "advanced-4",
-        "title": "Serialize and Deserialize Binary Tree",
-        "link": "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/"
+        "title": "Lowest Common Ancestor of a Binary Search Tree",
+        "link": "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree"
       },
       {
         "id": "advanced-5",
-        "title": "Longest Increasing Subsequence",
-        "link": "https://leetcode.com/problems/longest-increasing-subsequence/"
+        "title": "Number of Islands",
+        "link": "https://leetcode.com/problems/number-of-islands"
       },
       {
         "id": "advanced-6",
-        "title": "Word Break II",
-        "link": "https://leetcode.com/problems/word-break-ii/"
+        "title": "Daily Temperatures",
+        "link": "https://leetcode.com/problems/daily-temperatures"
       },
       {
         "id": "advanced-7",
-        "title": "Decode Ways",
-        "link": "https://leetcode.com/problems/decode-ways/"
+        "title": "Longest Substring Without Repeating Characters",
+        "link": "https://leetcode.com/problems/longest-substring-without-repeating-characters"
       },
       {
         "id": "advanced-8",
-        "title": "Maximum Product Subarray",
-        "link": "https://leetcode.com/problems/maximum-product-subarray/"
-      },
-      {
-        "id": "advanced-9",
-        "title": "House Robber II",
-        "link": "https://leetcode.com/problems/house-robber-ii/"
-      },
-      {
-        "id": "advanced-10",
-        "title": "Partition Equal Subset Sum",
-        "link": "https://leetcode.com/problems/partition-equal-subset-sum/"
-      }
-    ]
-  },
-  "pro": {
-    "label": "Pro",
-    "description": "Expert Level Challenges",
-    "questions": [
-      {
-        "id": "pro-1",
-        "title": "Median of Two Sorted Arrays",
-        "link": "https://leetcode.com/problems/median-of-two-sorted-arrays/"
-      },
-      {
-        "id": "pro-2",
-        "title": "Regular Expression Matching",
-        "link": "https://leetcode.com/problems/regular-expression-matching/"
-      },
-      {
-        "id": "pro-3",
-        "title": "Merge k Sorted Lists",
-        "link": "https://leetcode.com/problems/merge-k-sorted-lists/"
-      },
-      {
-        "id": "pro-4",
-        "title": "Trapping Rain Water",
-        "link": "https://leetcode.com/problems/trapping-rain-water/"
-      },
-      {
-        "id": "pro-5",
-        "title": "Wildcard Matching",
-        "link": "https://leetcode.com/problems/wildcard-matching/"
-      },
-      {
-        "id": "pro-6",
-        "title": "Edit Distance",
-        "link": "https://leetcode.com/problems/edit-distance/"
-      },
-      {
-        "id": "pro-7",
-        "title": "Longest Valid Parentheses",
-        "link": "https://leetcode.com/problems/longest-valid-parentheses/"
-      },
-      {
-        "id": "pro-8",
-        "title": "Word Ladder II",
-        "link": "https://leetcode.com/problems/word-ladder-ii/"
-      },
-      {
-        "id": "pro-9",
-        "title": "Maximal Rectangle",
-        "link": "https://leetcode.com/problems/maximal-rectangle/"
-      },
-      {
-        "id": "pro-10",
-        "title": "Distinct Subsequences",
-        "link": "https://leetcode.com/problems/distinct-subsequences/"
+        "title": "3Sum",
+        "link": "https://leetcode.com/problems/3sum"
       }
     ]
   }

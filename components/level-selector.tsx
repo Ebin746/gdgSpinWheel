@@ -26,18 +26,18 @@ const LEVELS: Level[] = [
     Icon: Zap,
   },
   {
-    key: "advanced",
-    label: "Advanced",
-    description: "Complex Problem Solving",
-    color: "#4285F4",
-    Icon: Rocket,
-  },
-  {
     key: "pro",
     label: "Pro",
     description: "Expert Level Challenges",
     color: "#EA4335",
     Icon: Flame,
+  },
+  {
+    key: "advanced",
+    label: "Advanced",
+    description: "Complex Problem Solving",
+    color: "#4285F4",
+    Icon: Rocket,
   },
 ];
 
@@ -56,8 +56,8 @@ export function LevelSelector({ onSelect, selectedLevel }: LevelSelectorProps) {
             key={level.key}
             onClick={() => onSelect(level.key)}
             className={`group relative p-4 rounded-2xl border-2 transition-all duration-500 hover:scale-105 animate-fade-in-up ${selectedLevel === level.key
-                ? "border-white shadow-lg"
-                : "border-transparent hover:border-white/30"
+              ? "border-white shadow-lg"
+              : "border-transparent hover:border-white/30"
               }`}
             style={{
               background:
