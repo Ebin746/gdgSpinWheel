@@ -115,6 +115,10 @@ export default function LuckyDrawPage() {
       ? questionsData[selectedLevel as keyof typeof questionsData].questions
       : [];
 
+  const levelSpinCount = selectedLevel
+    ? storedResults.filter((r) => r.level === selectedLevel).length
+    : 0;
+
   if (!mounted) {
     return (
       <main className="min-h-screen bg-background flex items-center justify-center">
@@ -326,6 +330,7 @@ export default function LuckyDrawPage() {
                         setIsSpinning={setIsSpinning}
                         selectedLevel={selectedLevel}
                         onReset={handleReset}
+                        spinCount={levelSpinCount}
                       />
                     </div>
                   </div>

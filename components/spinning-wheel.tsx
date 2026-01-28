@@ -16,6 +16,7 @@ interface SpinningWheelProps {
   setIsSpinning: (spinning: boolean) => void;
   selectedLevel: string;
   onReset: () => void;
+  spinCount: number;
 }
 
 // Google Colors for 4 segments - Red, Blue, Green, Yellow
@@ -40,6 +41,7 @@ export function SpinningWheel({
   setIsSpinning,
   selectedLevel,
   onReset,
+  spinCount,
 }: SpinningWheelProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | undefined>(undefined);
@@ -260,7 +262,14 @@ export function SpinningWheel({
 
     const spinDuration = 4500;
     const extraSpins = 5 + Math.random() * 3;
-    const targetQuestionIndex = Math.floor(Math.random() * questions.length);
+
+    // Guided difficulty logic based on spinCount
+    let maxAllowedIndex = questions.length;
+    if (spinCount < 4) {
+      maxAllowedIndex = Math.min(6, questions.length); // First 6 questions for the first 4 spins
+    }
+
+    const targetQuestionIndex = Math.floor(Math.random() * maxAllowedIndex);
 
     // Map question to segment (distribute questions evenly across 4 segments)
     const targetSegment = targetQuestionIndex % numSegments;
